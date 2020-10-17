@@ -1,12 +1,40 @@
 {% extends 'base.html' %}
-
 {%block title %} Home {%endblock title%}
 {%block content %}
-<h1>
-    Hello World!
-</h1>
-{{ products | safe}}
 
 <hr>
-{{purchase | safe}}
+{{df | safe}}
+<hr>
+
+<div>
+    {% if error_message %}
+        {{error_message}}
+    {%endif%}
+
+    <form action = "" method = "POST" class="form-group">
+        {% csrf_token %}
+        <label for="exampleFormControlSelect1">Choose a chart type:</label>
+        <!--<input type="hidden" name = "sales">-->
+        <select class="form-control" name="sales">
+            <option value="bar">Bar plot</option>
+            <option value="line">Line PLot</option>
+            <option value="count">Count</option>
+        </select>
+
+        <div class="row">
+            <div class="col">
+                <label>Date From</label>
+            <input type="date" name="date_from" class="form-control">
+            </div>
+            <div class="col">
+                <label>Date To</label>
+            <input type="date" name="date_to" class="form-control">
+            </div>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Select</button>
+    </form>
+
+</div>
+
 {%endblock content%}
