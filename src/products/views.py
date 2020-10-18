@@ -1,10 +1,14 @@
 from django.shortcuts import render
 from .models import Product, Purchase
+from .utils import get_simple_plot
 import pandas as pd
+
 # Create your views here.
 
 def chart_select_view(request):
+    graph = None
     error_message = None
+    df = None
 
     product_df = pd.DataFrame(Product.objects.all().values())
     purchase_df = pd.DataFrame(Purchase.objects.all().values())
@@ -18,16 +22,27 @@ def chart_select_view(request):
             date_from = request.POST['date_from']
             date_to = request.POST['date_to']
             print(chart_type)
-            print(date_from, date_to)
+
+            df['date'] = df['date'].apply(lambda x: x.strftime('%Y-%m-%d'))
+            df2 = df.groupby('date', as_index = False)['total_price'].agg('sum')
+
+            if chart_type != "":
+                if date_from != ""and date_to != "":
+                    df = df[(df['date']>date_from) & (df['date']<date_to)]
+                    df2 = df.groupby('date', as_index = False)['total_price'].agg('sum')
+                # Function to pass data to create a graph
+                graph = get_simple_plot(chart_type, x=df2['date'], y=df2['total_price'], data=df)
+            else:
+                error_message = 'Please select a chart type to continue'
+
+
     else:
         error_message = 'No records in the database'
-        df = None
+        
 
 
     context = {
+        'graph':graph,
         'error_message':error_message,
-        'products':product_df.to_html(),
-        'purchase':purchase_df.to_html(),
-        'df':df.to_html(),
     }
     return render(request, 'products/main.html', context )

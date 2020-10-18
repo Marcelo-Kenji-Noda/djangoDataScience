@@ -2,15 +2,18 @@
 {%block title %} Home {%endblock title%}
 {%block content %}
 
-<hr>
 {{df | safe}}
-<hr>
 
 <div>
     {% if error_message %}
         {{error_message}}
     {%endif%}
 
+    {% if request.POST %}
+        {%if graph%}
+            <img src="data:image/png;base64, {{graph | safe}}">
+        {%endif%}
+    {%endif%}
     <form action = "" method = "POST" class="form-group">
         {% csrf_token %}
         <label for="exampleFormControlSelect1">Choose a chart type:</label>
