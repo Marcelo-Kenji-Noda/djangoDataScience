@@ -3,6 +3,7 @@ import seaborn as sns
 from io import BytesIO
 import base64
 
+
 def get_image():
     #create a bytes buffer for the image to save
     buffer = BytesIO()
@@ -28,18 +29,19 @@ def get_simple_plot(chart_type, *args, **kwargs):
     y = kwargs.get('y')
     data = kwargs.get('data')
     if chart_type == 'bar':
-        title = "title"
+        title = "Total Price by Day (bar)"
         plt.title(title)
         plt.bar(x,y)
     elif chart_type == 'line':
-        title = "title"
+        title = "Total Price by Day (line)"
         plt.title(title)
         plt.plot(x,y)
     else:
-        title = "title"
+        title = "Number of itens"
         plt.title(title)
         sns.countplot('name', data=data)
     plt.tight_layout()
+    plt.xticks(rotation = 45)
 
     graph = get_image()
     return graph
